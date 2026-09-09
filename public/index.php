@@ -1,7 +1,10 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
 
-use Container;
+use App\Database\Database;
+use App\Container\Container;
 
 $container = new Container();
+$database = $container->get(Database::class);
 
-$container->get(UserService::class);
+var_dump($database);
