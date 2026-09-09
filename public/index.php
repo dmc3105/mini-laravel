@@ -3,8 +3,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Container\Container;
 use App\Controller\UserController;
+use App\Repository\UserRepository;
 
 $container = new Container();
-$database = $container->get(UserController::class);
+$controller = $container->get(UserController::class);
 
-var_dump($database);
+var_dump($controller);
