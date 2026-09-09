@@ -1,5 +1,7 @@
 <?php
 
-class ContainerException extends RuntimeException {
-    
+namespace App\Container;
+
+class ContainerException extends \RuntimeException {
+
 }
