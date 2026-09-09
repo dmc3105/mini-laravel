@@ -1,0 +1,16 @@
+{
+    "name": "algov/reflection",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Algov\\Reflection\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Alexey Govorov",
+            "email": "algovor04@gmail.com"
+        }
+    ],
+    "require": {}
+}
