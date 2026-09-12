@@ -33,7 +33,7 @@ class Container {
             $type = $parameter->getType();
 
             if ($type === null) {
-                throw new ContainerException("Cannot resolve parameter {parameter->getName()}");
+                throw new ContainerException("Cannot resolve parameter {$parameter->getName()}");
             }
 
             $dependency = $this->getInternal($type->getName(), $recursionDepth + 1);
