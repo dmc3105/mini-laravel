@@ -47,7 +47,7 @@ abstract class Model
         $model = new static();
         return new QueryBuilder(
             static::class,
-            $model->table,
+            $this->getTableName(),
             self::$database
         );
     }
@@ -130,7 +130,7 @@ abstract class Model
             return $this->table;
         }
 
-        $reflection = new ReflectionClass($this);
+        $reflection = new \ReflectionClass($this);
 
         return strtolower($reflection->getShortName()) . "s";
     }
