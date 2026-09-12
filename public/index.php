@@ -10,8 +10,11 @@ use App\Repository\UserRepositoryInterface;
 try {
     $container = new Container();
     $container->bind(UserRepositoryInterface::class, UserRepository::class);
+    $container->singleton(UserController::class, UserController::class);
     $controller = $container->get(UserController::class);
-    var_dump($controller);
+    $controller->test = "1234";
+    $controller2 = $container->get(UserController::class);
+    echo $controller2->test;
 } catch (ContainerException $ex) {
     echo "Error: " . $ex->getMessage();
 }

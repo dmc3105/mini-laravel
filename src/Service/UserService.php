@@ -7,11 +7,9 @@ use App\Repository\UserRepositoryInterface;
 
 class UserService {
     private UserRepositoryInterface $repository;
-    private UserController $userController;
-
-    public function __construct(UserRepositoryInterface $userRepository, UserController $userController)
+    
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->repository = $userRepository;
-        $this->userController = $userController;
     }
 }
