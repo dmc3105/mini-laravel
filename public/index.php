@@ -8,6 +8,8 @@ use App\ORM\Database;
 use App\ORM\Model;
 use App\Repository\UserRepository;
 use App\Repository\UserRepositoryInterface;
+use App\Routing\Attributes\Route;
+use App\Routing\Router;
 
 try {
     $database = "mysql:hots=localhost;dbname=users_db;charset=utf8mb4";
@@ -26,8 +28,10 @@ try {
     $container->singleton(Database::class, Database::class);
     $container->instance(Database::class, $database);
 
-    $repository = $container->get(UserRepositoryInterface::class);
-    var_dump($repository->getAll());
+    
+    $router = new Router($container);
+    $router->registerController(UserController::class);
+    $router->dispatch();
 } catch (ContainerException $ex) {
     echo "Error: " . $ex->getMessage();
 }
