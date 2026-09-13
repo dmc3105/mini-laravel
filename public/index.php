@@ -4,17 +4,30 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Container\Container;
 use App\Container\ContainerException;
 use App\Controller\UserController;
+use App\ORM\Database;
+use App\ORM\Model;
 use App\Repository\UserRepository;
 use App\Repository\UserRepositoryInterface;
 
 try {
+    $database = "mysql:hots=localhost;dbname=users_db;charset=utf8mb4";
+    $user = "root";
+    $password = "";
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false
+    ];
+    $database = new Database($database, $user, $password, $options);
+    Model::setDatabase($database);
+
     $container = new Container();
     $container->bind(UserRepositoryInterface::class, UserRepository::class);
-    $container->singleton(UserController::class, UserController::class);
-    $controller = $container->get(UserController::class);
-    $controller->test = "1234";
-    $controller2 = $container->get(UserController::class);
-    echo $controller2->test;
+    $container->singleton(Database::class, Database::class);
+    $container->instance(Database::class, $database);
+
+    $repository = $container->get(UserRepositoryInterface::class);
+    var_dump($repository->getAll());
 } catch (ContainerException $ex) {
     echo "Error: " . $ex->getMessage();
 }

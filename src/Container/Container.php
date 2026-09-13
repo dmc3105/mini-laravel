@@ -2,6 +2,8 @@
 
 namespace App\Container;
 
+use Exception;
+
 class Container
 {
     private const MAX_RECURSION_DEPTH = 64;
@@ -27,7 +29,7 @@ class Container
         } elseif ($this->isSingleton($id)) {
             $resolvedId = $this->getSingleton($id);
             if (isset($this->instances[$resolvedId])){
-                return $this->instances[$id];
+                return $this->instances[$resolvedId];
             }
         } else {
             $resolvedId = $id;
@@ -79,6 +81,15 @@ class Container
         if (isset($this->bindings[$abstract]))
             throw new ContainerException("Cannot register a class as a prototype and a singleton simultaneously");
         $this->singletones[$abstract] = $concrete;
+    }
+
+    public function instance(string $abstract, object $instance) : void {
+        if (!isset($this->singletones[$abstract]))
+        {
+            throw new Exception("Cannot to register an instance if it is not a singleton");
+        }
+        $concrete = $this->singletones[$abstract];
+        $this->instances[$concrete] = $instance;
     }
 
     private function hasBinding(string $id): bool

@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
-interface UserRepositoryInterface {
+use App\Models\User;
 
+interface UserRepositoryInterface {
+    public function getAll() : array;
 }

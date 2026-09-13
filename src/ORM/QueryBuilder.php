@@ -1,6 +1,6 @@
 <?php
 
-require_once "./Database.php";
+namespace App\ORM;
 
 class QueryBuilder
 {
@@ -54,7 +54,7 @@ class QueryBuilder
             $sql .= " LIMIT $this->limit";
         }
 
-        echo $sql . "<br>";
+        echo $sql . PHP_EOL;
 
         $statement = $this->database
             ->getPdo()

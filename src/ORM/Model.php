@@ -2,13 +2,13 @@
 
 namespace App\ORM;
 
+use App\ORM\Attributes\Table;
 use App\ORM\Database;
 use App\ORM\QueryBuilder;
 
 abstract class Model
 {
     protected array $attributes = [];
-    protected string $table;
 
     protected static Database $database;
 
@@ -47,9 +47,19 @@ abstract class Model
         $model = new static();
         return new QueryBuilder(
             static::class,
-            $this->getTableName(),
+            $model->getTableName(),
             self::$database
         );
+    }
+
+    protected function getTableName(): string
+    {
+        $reflection = new \ReflectionClass($this);
+
+        $tableAttr = $reflection->getAttributes(Table::class)[0];
+        return $tableAttr->name != null ?
+            $tableAttr->name :
+            strtolower($reflection->getShortName()) . "s";
     }
 
     public function fill(array $attributes): void
@@ -122,16 +132,5 @@ abstract class Model
 
         $this->attributes['id'] =
             (int) self::$database->getPdo()->lastInsertId();
-    }
-
-    protected function getTableName(): string
-    {
-        if (isset($this->table)) {
-            return $this->table;
-        }
-
-        $reflection = new \ReflectionClass($this);
-
-        return strtolower($reflection->getShortName()) . "s";
     }
 }

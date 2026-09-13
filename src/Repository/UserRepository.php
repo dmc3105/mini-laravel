@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
-use App\Database\Database;
+use App\ORM\Database;
+use App\Models\User;
+use Override;
 
 class UserRepository implements UserRepositoryInterface {
     private Database $database;
@@ -10,5 +12,11 @@ class UserRepository implements UserRepositoryInterface {
     public function __construct(Database $database)
     {
         $this->database= $database;
+    }
+
+    #[Override]
+    public function getAll(): array
+    {
+        return User::query()->get();
     }
 }
