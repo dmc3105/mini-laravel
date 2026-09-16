@@ -3,6 +3,7 @@
 namespace App\Routing;
 
 use App\Container\Container;
+use App\Routing\Response;
 use App\Routing\Attributes\Route;
 use ReflectionMethod;
 
@@ -42,12 +43,13 @@ class Router
         $request = new Request();
         foreach ($this->mappings as $mapping) {
             if ($this->match($mapping["route"], $request)){
-                echo $this->performControllerAction($mapping["class"], $mapping["action"]);
+                $response = $this->performControllerAction($mapping["class"], $mapping["action"]);
+                $response->send();
             }
         }
     }
 
-    private function performControllerAction(string $controllerClass, string $action) : mixed
+    private function performControllerAction(string $controllerClass, string $action) : Response
     {
         $reflection = new \ReflectionClass($controllerClass);
         $method = $reflection->getMethod($action);

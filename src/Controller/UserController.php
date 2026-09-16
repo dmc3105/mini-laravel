@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Routing\Response;
 use App\Service\UserService;
 use App\Routing\Attributes\Route;
 use App\Routing\Request;
@@ -17,10 +18,10 @@ class UserController
     }
 
     #[Route("/index")]
-    public function index(Request $request, RandomService $randomService) {
+    public function index(Request $request, RandomService $randomService) : Response {
         $query = $request->query("q");
         $number = $randomService->generateRandomNumber(1, 20);
-        return "hello your query is $query your random number is $number";
+        return Response::json(["query" => $query, "number" => $number]);
     }
 
     #[Route("/user", "POST")]
