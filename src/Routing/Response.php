@@ -48,4 +48,8 @@ class Response{
 
         echo $this->content;
     }
+
+    public function status() : int {
+        return $this->status;
+    }
 }

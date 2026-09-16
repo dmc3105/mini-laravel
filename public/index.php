@@ -4,6 +4,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Container\Container;
 use App\Container\ContainerException;
 use App\Controller\UserController;
+use App\Middleware\LoggingMiddleware;
+use App\Middleware\RandomErrorMiddleware;
 use App\ORM\Database;
 use App\ORM\Model;
 use App\Repository\UserRepository;
@@ -30,9 +32,11 @@ try {
 
     
     $router = new Router($container);
-    $router->registerController(UserController::class);
+    $router->controller(UserController::class);
+    $router->middleware(LoggingMiddleware::class);
+    $router->middleware(RandomErrorMiddleware::class);
     $router->dispatch();
 } catch (ContainerException $ex) {
-    echo "Error: " . $ex->getMessage();
+    echo "Error: " . $ex->getMessage(); 
 }
 
