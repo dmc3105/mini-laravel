@@ -56,7 +56,7 @@ abstract class Model
     {
         $reflection = new \ReflectionClass($this);
 
-        $tableAttr = $reflection->getAttributes(Table::class)[0];
+        $tableAttr = $reflection->getAttributes(Table::class)[0]->newInstance();
         return $tableAttr->name != null ?
             $tableAttr->name :
             strtolower($reflection->getShortName()) . "s";

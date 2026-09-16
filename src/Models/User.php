@@ -5,7 +5,7 @@ namespace App\Models;
 use App\ORM\Model;
 use App\ORM\Attributes\Table;
 
-#[Table("users_table")]
+#[Table("users")]
 class User extends Model
 {
     

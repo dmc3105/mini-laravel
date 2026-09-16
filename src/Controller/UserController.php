@@ -17,11 +17,9 @@ class UserController
         $this->service = $service;
     }
 
-    #[Route("/index")]
+    #[Route("/user")]
     public function index(Request $request, RandomService $randomService) : Response {
-        $query = $request->query("q");
-        $number = $randomService->generateRandomNumber(1, 20);
-        return Response::json(["query" => $query, "number" => $number]);
+        return Response::json($this->service->getAll());
     }
 
     #[Route("/user", "POST")]

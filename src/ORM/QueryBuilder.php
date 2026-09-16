@@ -53,9 +53,7 @@ class QueryBuilder
         if ($this->limit) {
             $sql .= " LIMIT $this->limit";
         }
-
-        echo $sql . PHP_EOL;
-
+        
         $statement = $this->database
             ->getPdo()
             ->prepare($sql);
