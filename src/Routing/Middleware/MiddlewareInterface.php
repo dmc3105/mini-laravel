@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Routing\Middleware;
+namespace Minilaravel\Routing\Middleware;
 
-use App\Routing\Request;
-use App\Routing\Response;
+use Minilaravel\Routing\Request;
+use Minilaravel\Routing\Response;
 use Closure;
 
 interface MiddlewareInterface

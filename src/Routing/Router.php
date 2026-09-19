@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Routing;
+namespace Minilaravel\Routing;
 
-use App\Container\Container;
-use App\Routing\Response;
-use App\Routing\Attributes\Route;
-use App\Routing\Middleware\Pipeline;
+use Minilaravel\Container\Container;
+use Minilaravel\Routing\Response;
+use Minilaravel\Routing\Attributes\Route;
+use Minilaravel\Routing\Middleware\Pipeline;
 use ReflectionMethod;
 
 class Router

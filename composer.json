@@ -1,9 +1,9 @@
 {
-    "name": "algov/reflection",
-    "type": "project",
+    "name": "dmc3105/minilaravel",
+    "type": "library",
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "Minilaravel\\": "src/"
         }
     },
     "authors": [
@@ -12,5 +12,7 @@
             "email": "algovor04@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": ">=8.0"
+    }
 }

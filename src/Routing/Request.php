@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Routing;
+namespace Minilaravel\Routing;
 
 class Request {
     public function method() : string {

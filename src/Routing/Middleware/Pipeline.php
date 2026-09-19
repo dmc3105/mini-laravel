@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Routing\Middleware;
+namespace Minilaravel\Routing\Middleware;
 
-use App\Container\Container;
-use App\Routing\Request;
-use App\Routing\Response;
+use Minilaravel\Container\Container;
+use Minilaravel\Routing\Request;
+use Minilaravel\Routing\Response;
 use Closure;
 
 class Pipeline {

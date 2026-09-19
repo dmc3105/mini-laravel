@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ORM\Attributes;
+namespace Minilaravel\ORM\Attributes;
 
 use Attribute;
 

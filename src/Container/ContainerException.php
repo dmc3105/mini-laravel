@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Container;
+namespace Minilaravel\Container;
 
 class ContainerException extends \RuntimeException {
 

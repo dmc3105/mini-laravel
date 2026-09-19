@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Routing\Attributes;
+namespace Minilaravel\Routing\Attributes;
 
 use Attribute;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ORM;
+namespace Minilaravel\ORM;
 
 class Database {
     private \PDO $pdo;

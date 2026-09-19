@@ -1,10 +1,10 @@
 <?php
 
-namespace App\ORM;
+namespace Minilaravel\ORM;
 
-use App\ORM\Attributes\Table;
-use App\ORM\Database;
-use App\ORM\QueryBuilder;
+use Minilaravel\ORM\Attributes\Table;
+use Minilaravel\ORM\Database;
+use Minilaravel\ORM\QueryBuilder;
 use JsonSerializable;
 use Override;
 
