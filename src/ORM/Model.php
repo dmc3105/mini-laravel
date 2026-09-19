@@ -5,8 +5,10 @@ namespace App\ORM;
 use App\ORM\Attributes\Table;
 use App\ORM\Database;
 use App\ORM\QueryBuilder;
+use JsonSerializable;
+use Override;
 
-abstract class Model
+abstract class Model implements JsonSerializable
 {
     protected array $attributes = [];
 
@@ -50,6 +52,12 @@ abstract class Model
             $model->getTableName(),
             self::$database
         );
+    }
+
+    #[Override()]
+    public function jsonSerialize(): mixed
+    {
+        return $this->attributes;
     }
 
     protected function getTableName(): string
