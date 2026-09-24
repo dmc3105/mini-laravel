@@ -7,6 +7,8 @@ use Minilaravel\Routing\Response;
 use Minilaravel\Routing\Attributes\Route;
 use Minilaravel\Routing\Middleware\Pipeline;
 use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionType;
 
 class Router
 {
@@ -25,19 +27,21 @@ class Router
         $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $method) {
-            $atrributes = $method->getAttributes(Route::class);
-            
-            if ($atrributes === []) {
+            $attributes = $method->getAttributes(Route::class);
+
+            if ($attributes === []) {
                 continue;
             }
 
-            $route = $atrributes[0]->newInstance();
-                
-            $this->mappings[] = [
-                "class" => $reflection->getName(),
-                "action" => $method->getName(),
-                "route" => $route,
-            ];
+            foreach ($attributes as $attribute) {
+                $route = $attribute->newInstance();
+
+                $this->mappings[] = [
+                    "class" => $reflection->getName(),
+                    "action" => $method->getName(),
+                    "route" => $route,
+                ];
+            }
         }
         return $this;
     }
@@ -52,11 +56,13 @@ class Router
     public function dispatch() : void {
         $request = new Request();
         foreach ($this->mappings as $mapping) {
-            if ($this->match($mapping["route"], $request)){
+            $params = $this->match($mapping["route"], $request);
+            if ($params !== null){
                 $response = $this->runPipeline(
                     $request,
                     $mapping["class"],
-                    $mapping["action"]
+                    $mapping["action"],
+                    $params
                 );
                 $response->send();
             }
@@ -66,8 +72,8 @@ class Router
     private function runPipeline(
         Request $request,
         string $controllerClass,
-        string $action
-
+        string $action,
+        array $params
     ) : Response {
         $pipeline = new Pipeline($this->container);
 
@@ -80,7 +86,8 @@ class Router
             $this->performControllerAction(
                 $controllerClass,
                 $action,
-                $request
+                $request,
+                $params
             )
         );
     }
@@ -88,25 +95,81 @@ class Router
     private function performControllerAction(
         string $controllerClass,
         string $action,
-        Request $request
+        Request $request,
+        array $params
     ) : Response
     {
         $reflection = new \ReflectionClass($controllerClass);
         $method = $reflection->getMethod($action);
         $arguments = [];
         foreach ($method->getParameters() as $parameter) {
-            if ($parameter->getType()->getName() === Request::class) {
-                $arguments[] = $request;
-            } else {
-                $arguments[] = $this->container->get($parameter->getType()->getName());
+            $name = $parameter->getName();
+            $type = $parameter->getType();
+
+            if (array_key_exists($name, $params)) {
+                $arguments[] = $this->cast($params[$name], $type);
+                continue;
             }
+
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin() && $type->getName() === Request::class) {
+                $arguments[] = $request;
+                continue;
+            }
+
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
+                $arguments[] = $this->container->get($type->getName());
+                continue;
+            }
+
+            if ($parameter->isDefaultValueAvailable()) {
+                $arguments[] = $parameter->getDefaultValue();
+                continue;
+            }
+
+            $arguments[] = null;
         }
 
         $controller = $this->container->get($controllerClass);
         return $method->invokeArgs($controller, $arguments);
     }
 
-    private function match(Route $route, Request $request) : bool {
-        return $route->path == $request->path() && $route->method == $request->method();
+    private function cast(mixed $value, ?ReflectionType $type) : mixed {
+        if (!$type instanceof ReflectionNamedType || !$type->isBuiltin()) {
+            return $value;
+        }
+
+        return match ($type->getName()) {
+            'int' => (int) $value,
+            'float' => (float) $value,
+            'bool' => filter_var($value, FILTER_VALIDATE_BOOL),
+            'string' => (string) $value,
+            default => $value,
+        };
+    }
+
+    private function match(Route $route, Request $request) : ?array {
+        if (strtoupper($route->method) !== strtoupper($request->method())) {
+            return null;
+        }
+
+        $pattern = preg_replace_callback(
+            '/\{(\w+)\}/',
+            fn ($m) => '(?P<' . $m[1] . '>[^/]+)',
+            $route->path
+        );
+        $pattern = '#^' . $pattern . '$#';
+
+        if (!preg_match($pattern, $request->path(), $matches)) {
+            return null;
+        }
+
+        $params = [];
+        foreach ($matches as $key => $value) {
+            if (is_string($key)) {
+                $params[$key] = $value;
+            }
+        }
+
+        return $params;
     }
 }

@@ -23,7 +23,7 @@ abstract class Model implements JsonSerializable
     {
         $model = new static();
 
-        $sql = "SELECT * FROM {$model->table} WHERE id = :id";
+        $sql = "SELECT * FROM {$model->getTableName()} WHERE id = :id";
 
         $statement = self::$database
             ->getPdo()
@@ -33,7 +33,7 @@ abstract class Model implements JsonSerializable
             'id' => $id
         ]);
 
-        $data = $statement->fetch();
+        $data = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if ($data == null) {
             return null;
@@ -70,9 +70,15 @@ abstract class Model implements JsonSerializable
             strtolower($reflection->getShortName()) . "s";
     }
 
-    public function fill(array $attributes): void
+    public function fill(array $attributes): static
     {
         $this->attributes = $attributes;
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return $this->attributes;
     }
 
     public function save(): void
@@ -82,6 +88,23 @@ abstract class Model implements JsonSerializable
         } else {
             $this->update();
         }
+    }
+
+    public function delete(): void
+    {
+        if ($this->id === null) {
+            return;
+        }
+
+        $sql = "DELETE FROM {$this->getTableName()} WHERE id = :id";
+
+        $statement = self::$database
+            ->getPdo()
+            ->prepare($sql);
+
+        $statement->execute([
+            'id' => $this->id,
+        ]);
     }
 
     public function __get($name)
@@ -129,8 +152,6 @@ abstract class Model implements JsonSerializable
         $sql .= " VALUES ";
         $params = array_map(fn($key) => ":$key", $keys);
         $sql .= "(" . implode(", ", $params) . ")";
-
-        echo $sql . "<br>";
 
         $statement = self::$database
             ->getPdo()

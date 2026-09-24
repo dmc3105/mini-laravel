@@ -15,8 +15,8 @@ class Request {
         return $key === null ? $_GET : ($_GET[$key] ?? null);
     }
 
-    public function input(?string $key) : mixed {
-        $data = json_decode(file_get_contents("php://input", true)) ?? [];
+    public function input(?string $key = null) : mixed {
+        $data = json_decode(file_get_contents("php://input"), true) ?? [];
         $data = array_replace($_POST, $data);
         return $key === null ? $data : ($data[$key] ?? null);
     }

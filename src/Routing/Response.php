@@ -52,4 +52,9 @@ class Response{
     public function status() : int {
         return $this->status;
     }
+
+    public static function noContent() : self
+    {
+        return new self('', 204);
+    }
 }

@@ -60,7 +60,7 @@ class QueryBuilder
 
         $statement->execute($this->bindings);
 
-        $rows = $statement->fetchAll();
+        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $models = [];
         foreach ($rows as $row) {
